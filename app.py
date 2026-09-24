@@ -314,19 +314,19 @@ def render_analysis(result):
     st.markdown("### 🔑 Matching Keywords")
     render_list(
         keywords.get("matched", []),
-        "No matching keywords were returned.",
+        "No matching keywords were returned."
     )
 
     st.markdown("### ❌ Missing Keywords")
     render_list(
         keywords.get("missing", []),
-        "No missing keywords were returned.",
+        "No missing keywords were returned."
     )
 
     st.markdown("### 🟡 Partial Keywords")
     render_list(
         keywords.get("partial", []),
-        "No partial keywords were returned.",
+        "No partial keywords were returned."
     )
 
     with tabs[4]:
