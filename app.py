@@ -145,31 +145,82 @@ def safe_error_message(error):
 def run_analysis(resume_text, job_description, model):
     progress = st.progress(0, text="Preparing resume analysis...")
 
+    # Step 1: Resume extraction
     progress.progress(15, text="Extracting resume information...")
+
+    resume_prompt = RESUME_EXTRACTION_PROMPT.replace(
+        "{resume_text}",
+        resume_text
+    )
+
     resume_data = call_json(
-        RESUME_EXTRACTION_PROMPT.format(resume_text=resume_text), model
+        resume_prompt,
+        model
     )
 
+    # Step 2: Job description extraction
     progress.progress(35, text="Analyzing the job description...")
+
+    jd_prompt = JD_EXTRACTION_PROMPT.replace(
+        "{job_description}",
+        job_description
+    )
+
     jd_data = call_json(
-        JD_EXTRACTION_PROMPT.format(job_description=job_description), model
+        jd_prompt,
+        model
     )
 
-    progress.progress(55, text="Comparing resume with job requirements...")
-    analysis_prompt = ANALYSIS_PROMPT.format(
-        resume_data=json.dumps(resume_data, ensure_ascii=False, indent=2),
-        jd_data=json.dumps(jd_data, ensure_ascii=False, indent=2),
+    # Step 3: Resume vs Job Description analysis
+    progress.progress(
+        55,
+        text="Comparing resume with job requirements..."
     )
-    analysis = call_json(analysis_prompt, model)
 
-    progress.progress(85, text="Preparing final report...")
+    analysis_prompt = (
+        ANALYSIS_PROMPT
+        .replace("{resume_text}", resume_text)
+        .replace("{job_description}", job_description)
+        .replace(
+            "{resume_json}",
+            json.dumps(
+                resume_data,
+                ensure_ascii=False,
+                indent=2
+            )
+        )
+        .replace(
+            "{jd_json}",
+            json.dumps(
+                jd_data,
+                ensure_ascii=False,
+                indent=2
+            )
+        )
+    )
+
+    analysis = call_json(
+        analysis_prompt,
+        model
+    )
+
+    progress.progress(
+        85,
+        text="Preparing final report..."
+    )
+
     result = {
         "resume_data": resume_data,
         "jd_data": jd_data,
         "analysis": analysis,
         "model": model,
     }
-    progress.progress(100, text="Analysis completed.")
+
+    progress.progress(
+        100,
+        text="Analysis completed."
+    )
+
     return result
 
 
