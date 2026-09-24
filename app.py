@@ -308,26 +308,26 @@ def render_analysis(result):
             "No major gaps were returned.",
         )
 
-    with tabs[3]:
-    keywords = analysis.get("keywords", {})
+       with tabs[3]:
+        keywords = analysis.get("keywords", {})
 
-    st.markdown("### 🔑 Matching Keywords")
-    render_list(
-        keywords.get("matched", []),
-        "No matching keywords were returned."
-    )
+        st.markdown("### 🔑 Matching Keywords")
+        render_list(
+            keywords.get("matched", []),
+            "No matching keywords were returned."
+        )
 
-    st.markdown("### ❌ Missing Keywords")
-    render_list(
-        keywords.get("missing", []),
-        "No missing keywords were returned."
-    )
+        st.markdown("### ❌ Missing Keywords")
+        render_list(
+            keywords.get("missing", []),
+            "No missing keywords were returned."
+        )
 
-    st.markdown("### 🟡 Partial Keywords")
-    render_list(
-        keywords.get("partial", []),
-        "No partial keywords were returned."
-    )
+        st.markdown("### 🟡 Partial Keywords")
+        render_list(
+            keywords.get("partial", []),
+            "No partial keywords were returned."
+        )
 
     with tabs[4]:
         st.markdown("### Resume Improvement Suggestions")
