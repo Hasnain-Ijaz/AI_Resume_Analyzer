@@ -250,19 +250,32 @@ def render_list(items, empty_message="No items available."):
 def render_analysis(result):
     analysis = result.get("analysis", {})
 
-    def score(*keys):
-        for key in keys:
-            value = analysis.get(key)
-            if value is not None:
-                try:
-                    return max(0, min(100, int(float(value))))
-                except (TypeError, ValueError):
-                    pass
-        return 0
+   def score(*values):
+    for value in values:
+        if value is not None:
+            try:
+                return max(0, min(100, int(float(value))))
+            except (TypeError, ValueError):
+                pass
+    return 0
 
-    match_score = score("match_score", "overall_match_score", "ats_score")
-    ats_score = score("ats_score", "match_score")
-    keyword_score = score("keyword_score")
+    scores = analysis.get("scores", {})
+
+match_score = score(
+    scores.get("overall_match"),
+    analysis.get("match_score"),
+    analysis.get("overall_match_score")
+)
+
+ats_score = score(
+    scores.get("ats_compatibility"),
+    analysis.get("ats_score")
+)
+
+keyword_score = score(
+    scores.get("keyword_match"),
+    analysis.get("keyword_score")
+)
 
     st.subheader("📊 Resume Match Score")
     c1, c2, c3 = st.columns(3)
@@ -294,16 +307,25 @@ def render_analysis(result):
         )
 
     with tabs[3]:
-        st.markdown("### Matching Keywords")
-        render_list(
-            analysis.get("matching_keywords") or analysis.get("matched_keywords"),
-            "No matching keywords were returned.",
-        )
-        st.markdown("### Missing Keywords")
-        render_list(
-            analysis.get("missing_keywords") or analysis.get("keyword_gaps"),
-            "No missing keywords were returned.",
-        )
+    keywords = analysis.get("keywords", {})
+
+    st.markdown("### 🔑 Matching Keywords")
+    render_list(
+        keywords.get("matched", []),
+        "No matching keywords were returned.",
+    )
+
+    st.markdown("### ❌ Missing Keywords")
+    render_list(
+        keywords.get("missing", []),
+        "No missing keywords were returned.",
+    )
+
+    st.markdown("### 🟡 Partial Keywords")
+    render_list(
+        keywords.get("partial", []),
+        "No partial keywords were returned.",
+    )
 
     with tabs[4]:
         st.markdown("### Resume Improvement Suggestions")
