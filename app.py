@@ -308,7 +308,7 @@ def render_analysis(result):
             "No major gaps were returned.",
         )
 
-       with tabs[3]:
+    with tabs[3]:
         keywords = analysis.get("keywords", {})
 
         st.markdown("### 🔑 Matching Keywords")
