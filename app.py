@@ -361,17 +361,20 @@ if analyze:
         progress.progress(100, text="Analysis complete.")
         st.success("Resume analysis completed successfully.")
 
-    except Exception as e:
-        progress.empty()
-        msg = str(e).lower()
-        if "authentication" in msg or "api key" in msg or "401" in msg:
-            st.error("The AI service rejected the API key. Check your API configuration.")
-        elif "rate" in msg or "429" in msg:
-            st.error("The AI service is busy or rate-limited. Please try again shortly.")
-        elif "json" in msg:
-            st.error("The AI returned an unexpected format. Please try the analysis again.")
-        else:
-            st.error("The analysis could not be completed. Please check your API configuration and try again.")
+   except Exception as e:
+    progress.empty()
+
+    error_message = str(e)
+
+    st.error("❌ Analysis failed")
+
+    with st.expander("🔍 Technical Error Details", expanded=True):
+        st.code(error_message)
+
+    st.info(
+        "During development, the technical error is shown above so you can identify "
+        "the exact API/model/configuration problem."
+    )
 
 # ---------- Results ----------
 if "analysis_result" in st.session_state:
