@@ -90,7 +90,7 @@ def call_json(prompt, model=None):
     try:
         response = client.chat.completions.create(
             model=model,
-            temperature=0.2,
+            temperature=0,
             response_format={"type": "json_object"},
             messages=messages,
         )
@@ -142,6 +142,7 @@ def safe_error_message(error):
     return re.sub(r"gsk_[A-Za-z0-9_-]+", "gsk_***REDACTED***", str(error))
 
 
+@st.cache_data(show_spinner=False)
 def run_analysis(resume_text, job_description, model):
     progress = st.progress(0, text="Preparing resume analysis...")
 
@@ -330,18 +331,29 @@ def render_analysis(result):
         )
 
     with tabs[4]:
-        st.markdown("### Resume Improvement Suggestions")
-        render_list(
-            analysis.get("improvements") or analysis.get("recommendations") or analysis.get("suggestions"),
-            "No improvement suggestions were returned.",
-        )
+       st.markdown("### 💡 Improvement Suggestions")
+
+next_steps = analysis.get("next_steps", [])
+
+if next_steps:
+    for step in next_steps:
+        st.markdown(f"- {step}")
+else:
+    st.info("No improvement suggestions were returned.")
 
     with tabs[5]:
-        st.markdown("### Tailored Bullet Points")
-        render_list(
-            analysis.get("tailored_bullets") or analysis.get("improved_bullets") or analysis.get("bullet_points"),
-            "No tailored bullets were returned.",
-        )
+       st.markdown("### ✍️ Tailored Bullet Suggestions")
+
+bullet_suggestions = analysis.get("bullet_suggestions", [])
+
+if bullet_suggestions:
+    for item in bullet_suggestions:
+        st.markdown(f"**Original:** {item.get('original', '')}")
+        st.markdown(f"**Improved:** {item.get('improved', '')}")
+        st.markdown(f"**Reason:** {item.get('reason', '')}")
+        st.divider()
+else:
+    st.info("No tailored bullets were returned.")
 
     with tabs[6]:
         st.json(result)
