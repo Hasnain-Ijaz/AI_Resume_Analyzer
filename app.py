@@ -250,32 +250,34 @@ def render_list(items, empty_message="No items available."):
 def render_analysis(result):
     analysis = result.get("analysis", {})
 
-   def score(*values):
-    for value in values:
-        if value is not None:
-            try:
-                return max(0, min(100, int(float(value))))
-            except (TypeError, ValueError):
-                pass
-    return 0
+    def score(*values):
+        for value in values:
+            if value is not None:
+                try:
+                    return max(0, min(100, int(float(value))))
+                except (TypeError, ValueError):
+                    pass
+        return 0
 
     scores = analysis.get("scores", {})
 
-match_score = score(
-    scores.get("overall_match"),
-    analysis.get("match_score"),
-    analysis.get("overall_match_score")
-)
+    match_score = score(
+        scores.get("overall_match"),
+        analysis.get("match_score"),
+        analysis.get("overall_match_score")
+    )
 
-ats_score = score(
-    scores.get("ats_compatibility"),
-    analysis.get("ats_score")
-)
+    ats_score = score(
+        scores.get("ats_compatibility"),
+        analysis.get("ats_score")
+    )
 
-keyword_score = score(
-    scores.get("keyword_match"),
-    analysis.get("keyword_score")
-)
+    keyword_score = score(
+        scores.get("keyword_match"),
+        analysis.get("keyword_score")
+    )
+
+    # Baqi tumhara existing dashboard code yahan rahega
 
     st.subheader("📊 Resume Match Score")
     c1, c2, c3 = st.columns(3)
