@@ -2,8 +2,8 @@ RESUME_EXTRACTION_PROMPT = """
 Extract structured information from the resume below.
 
 Return JSON with exactly these broad keys:
-{
-  "candidate": {
+{{
+  "candidate": {{
     "name": "",
     "email": "",
     "phone": "",
@@ -11,7 +11,7 @@ Return JSON with exactly these broad keys:
     "linkedin": "",
     "github": "",
     "portfolio": ""
-  },
+  }},
   "summary": "",
   "education": [],
   "experience": [],
@@ -19,7 +19,7 @@ Return JSON with exactly these broad keys:
   "skills": [],
   "certifications": [],
   "languages": []
-}
+}}
 
 Rules:
 - Use only information present in the resume.
@@ -28,7 +28,7 @@ Rules:
 - Preserve important technical names.
 
 RESUME:
-{resume}
+{resume_text}
 """
 
 
@@ -36,7 +36,7 @@ JD_EXTRACTION_PROMPT = """
 Extract structured requirements from the job description.
 
 Return JSON:
-{
+{{
   "job_title": "",
   "required_skills": [],
   "preferred_skills": [],
@@ -46,7 +46,7 @@ Return JSON:
   "certifications": [],
   "soft_skills": [],
   "keywords": []
-}
+}}
 
 Rules:
 - Use only information present in the job description.
@@ -69,43 +69,54 @@ You have:
 
 Return valid JSON using this schema:
 
-{
-  "candidate": {"name": "", "target_role": ""},
-  "scores": {
+{{
+  "candidate": {{
+    "name": "",
+    "target_role": ""
+  }},
+  "scores": {{
     "overall_match": 0,
     "ats_compatibility": 0,
     "skills_match": 0,
     "keyword_match": 0,
     "experience_relevance": 0,
     "project_relevance": 0
-  },
-  "keywords": {
+  }},
+  "keywords": {{
     "matched": [],
     "missing": [],
     "partial": []
-  },
+  }},
   "strengths": [],
   "weaknesses": [],
   "skill_gaps": [
-    {"skill": "", "importance": "", "reason": ""}
+    {{
+      "skill": "",
+      "importance": "",
+      "reason": ""
+    }}
   ],
-  "ats_analysis": {
+  "ats_analysis": {{
     "positive_factors": [],
     "risks": [],
     "recommendations": []
-  },
+  }},
   "bullet_suggestions": [
-    {"original": "", "improved": "", "reason": ""}
+    {{
+      "original": "",
+      "improved": "",
+      "reason": ""
+    }}
   ],
-  "grammar_analysis": {
+  "grammar_analysis": {{
     "issues": [],
     "weak_verbs": [],
     "suggestions": []
-  },
+  }},
   "recruiter_summary": "",
   "elevator_pitch": "",
   "next_steps": []
-}
+}}
 
 SCORING GUIDANCE:
 - Scores must be integers from 0 to 100.
@@ -128,7 +139,7 @@ PRIVACY/ACCURACY:
 - Use "Not clearly demonstrated" when evidence is insufficient.
 
 RAW RESUME:
-{resume}
+{resume_text}
 
 RAW JOB DESCRIPTION:
 {job_description}
