@@ -98,7 +98,7 @@ def call_json(prompt, model=None):
         try:
             response = client.chat.completions.create(
                 model=model,
-                temperature=0.2,
+                temperature=0,
                 messages=messages,
             )
         except Exception:
@@ -331,29 +331,27 @@ def render_analysis(result):
         )
 
     with tabs[4]:
-       st.markdown("### 💡 Improvement Suggestions")
+        st.markdown("### 💡 Improvement Suggestions")
+        next_steps = analysis.get("next_steps", [])
 
-next_steps = analysis.get("next_steps", [])
-
-if next_steps:
-    for step in next_steps:
-        st.markdown(f"- {step}")
-else:
-    st.info("No improvement suggestions were returned.")
+        if next_steps:
+            for step in next_steps:
+                st.markdown(f"- {step}")
+        else:
+            st.info("No improvement suggestions were returned.")
 
     with tabs[5]:
-       st.markdown("### ✍️ Tailored Bullet Suggestions")
+        st.markdown("### ✍️ Tailored Bullet Suggestions")
+        bullet_suggestions = analysis.get("bullet_suggestions", [])
 
-bullet_suggestions = analysis.get("bullet_suggestions", [])
-
-if bullet_suggestions:
-    for item in bullet_suggestions:
-        st.markdown(f"**Original:** {item.get('original', '')}")
-        st.markdown(f"**Improved:** {item.get('improved', '')}")
-        st.markdown(f"**Reason:** {item.get('reason', '')}")
-        st.divider()
-else:
-    st.info("No tailored bullets were returned.")
+        if bullet_suggestions:
+            for item in bullet_suggestions:
+                st.markdown(f"**Original:** {item.get('original', '')}")
+                st.markdown(f"**Improved:** {item.get('improved', '')}")
+                st.markdown(f"**Reason:** {item.get('reason', '')}")
+                st.divider()
+        else:
+            st.info("No tailored bullets were returned.")
 
     with tabs[6]:
         st.json(result)
